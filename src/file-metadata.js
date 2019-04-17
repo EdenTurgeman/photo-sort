@@ -1,23 +1,18 @@
-const fs = require('fs');
-const exifParser = require('exif-parser');
+import {exists} from 'fs';
+import {create} from 'exif-parser';
+import readChunk from 'read-chunk';
+
 
 const FileNotFound = {err: 'File does not exits in given path'};
 
-const getMetadata = (filePath, cb) => {
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      throw err;
-    }
-    const fileData = exifParser.create(data);
-
-    cb(fileData.parse());
-  });
-};
-
-module.exports = (filePath, metadataCb) => fs.exists(filePath, exists => {
+const getMetadata = (filePath, metadataCb) => exists(filePath, exists => {
   if (!exists) {
     throw FileNotFound;
   }
 
-  getMetadata(filePath, metadataCb);
+  readChunk(filePath, 0, 65635).then(buffer => {
+    metadataCb(create(buffer).parse().tags);
+  });
 });
+
+export default getMetadata;

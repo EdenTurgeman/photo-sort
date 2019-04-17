@@ -8,9 +8,8 @@ $ [sudo] npm install photo-sort
 
 ## Usage
 ```js
-import {add} from 'photo-sort';
 
-add(1, 2); // 3
+photo-sort SDCard:\ E:\Photos
 ```
 
 ## License
